@@ -243,7 +243,7 @@ python scripts/primer_blast.py -f <F> -r <R> -g <GENE> -s "<SCIENTIFIC_NAME>" --
 | 文献检索只罗列了期刊名未附链接 | **违反规则** — 必须重新搜索并补全具体文章 URL |
 | 用户拒绝保存报告 | 告知结果在对话历史中可查阅 |
 | Chrome MCP 不可用 | WebSearch 单独执行，仍有结果 |
-| Google Scholar 触发 CAPTCHA | 跳过方式 A，仅用方式 B WebSearch 继续 |
+| Google Scholar 触发 CAPTCHA | 询问用户是否手动完成验证：如用户完成验证后告知，继续方式 A；如用户选择跳过，仅用方式 B WebSearch 继续 |
 
 ---
 
