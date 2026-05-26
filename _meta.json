@@ -1,0 +1,8 @@
+{
+  "ownerId": "local",
+  "slug": "easy-qPCR-primer",
+  "version": "1.0.0",
+  "publishedAt": "2026-05-26",
+  "license": "MIT",
+  "description": "Easy qPCR primer design and verification pipeline: PrimerBank search + NCBI BLAST verification + literature search"
+}
