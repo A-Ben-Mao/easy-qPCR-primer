@@ -9,7 +9,7 @@
 ```
 easy-qPCR-primer/
 │
-├── SKILL.md               ← 技能核心定义（触发词、工作流、边界处理）
+├── SKILL.md                ← 技能核心定义（触发词、工作流、边界处理）
 ├── _meta.json              ← 技能元信息（版本、协议）
 │
 ├── README.md               ← 中文说明文档
