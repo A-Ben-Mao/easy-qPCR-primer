@@ -34,8 +34,9 @@ easy-qPCR-primer/
 - **NCBI Gene Symbol 自动解析** — 输入别名，自动转换为官方 Gene Symbol
 - **Primer-BLAST 验证** — 逐对验证引物在 RefSeq 数据库中的特异性
 - **文献检索** — 可选在 Google Scholar 中检索引物的文献使用情况
-  - 优先通过 **Chrome DevTools MCP** 自动化检索（如已安装）
-  - 自动降级到 WebSearch 回退方案
+  - 优先通过 **Chrome DevTools MCP** 自动化检索 Scholar
+  - 同时执行 **WebSearch** 作为补充，结果去重合并
+  - 如触发 CAPTCHA，用户可手动验证后继续或跳过
 - **完整报告** — 生成结构化 Markdown 报告，便于保存和分享
 
 ## 使用方式

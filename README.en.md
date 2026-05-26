@@ -34,8 +34,9 @@ easy-qPCR-primer/
 - **Auto Symbol Resolution** — Input an alias, get the official NCBI Gene Symbol
 - **Primer-BLAST Verification** — Validates each primer pair against RefSeq
 - **Literature Search** — Optionally check Google Scholar for primer usage references
-  - Prioritizes **Chrome DevTools MCP** automation (if installed)
-  - Auto-falls back to WebSearch
+  - Prioritizes **Chrome DevTools MCP** for Scholar search
+  - Runs **WebSearch** in parallel for supplementary results, deduplicated
+  - CAPTCHA prompts user to verify manually or skip
 - **Full Report** — Structured Markdown output for saving and sharing
 
 ## Usage
