@@ -9,7 +9,7 @@
 ```
 easy-qPCR-primer/
 │
-├── SKILL.md               ← Skill definition (triggers, workflow, edge cases)
+├── SKILL.md                ← Skill definition (triggers, workflow, edge cases)
 ├── _meta.json              ← Metadata (version, license)
 │
 ├── README.md               ← Chinese documentation
