@@ -76,6 +76,33 @@ GC 含量     →  F: 52% / R: 43%
 脱靶分析    →  非特异性靶标检测
 ```
 
+## 文件结构
+
+```
+easy-qPCR-primer/
+│
+├── SKILL.md               ← 技能核心定义（触发词、工作流、边界处理）
+├── _meta.json              ← 技能元信息（版本、协议）
+│
+├── README.md               ← 中文说明文档
+├── README.en.md            ← 英文说明文档
+├── LICENSE                 ← MIT 开源协议
+│
+├── scripts/
+│   ├── primer_blast.py     ← 主要脚本：Gene 解析、PrimerBank 搜索、BLAST 验证
+│   └── requirements.txt    ← Python 依赖（requests）
+│
+└── evals/                  ← 技能评估用例
+```
+
+| 文件 | 作用 |
+|------|------|
+| `SKILL.md` | 定义技能的行为：触发条件、执行流程、各阶段操作指令、异常处理。Claude Code 加载此文件后按流程执行 |
+| `_meta.json` | 记录技能的版本号、发布日期、协议等信息 |
+| `primer_blast.py` | 封装 NCBI E-utilities 和 Primer-BLAST API，提供 Gene Symbol 解析、PrimerBank 搜索、BLAST 提交与轮询三大功能 |
+| `requirements.txt` | 声明 Python 依赖：`requests>=2.25.0` |
+| `evals/` | 存放评估测试用例，用于验证技能正确性 |
+
 ## 开源协议
 
 MIT
