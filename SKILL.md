@@ -89,13 +89,13 @@ python scripts/primer_blast.py -f <F> -r <R> -g <GENE> -s "<SCIENTIFIC_NAME>" --
 
 **主动询问用户**："是否需要在 Google Scholar 中检索这些引物在文献中的使用情况？"
 
-**检测 Chrome DevTools MCP 是否可用**：如果系统中安装了 `chrome-devtools` MCP（配置在 `.mcp.json` 中），则优先使用 Chrome 浏览器自动化方式检索 Scholar，否则使用 WebSearch 回退。
+**检测 Chrome DevTools MCP 是否可用**：检查是否有 `mcp__chrome-devtools__navigate_page` 等工具可用。如果可用，**两种检索方式并行运行**，互相补充，取并集结果。
 
-#### 方式 A: Chrome DevTools MCP（优先，需安装 chrome-devtools-mcp）
+#### 方式 A: Chrome DevTools MCP（如已安装则启用）
 
-前提条件：检查是否有 `mcp__chrome-devtools__navigate_page` 等工具可用。如果可用：
+如果 `chrome-devtools` MCP 可用，对每对引物使用浏览器自动化检索 Scholar：
 
-1. 对每对选中引物，使用 `mcp__chrome-devtools__navigate_page` 跳转到:
+1. 使用 `mcp__chrome-devtools__navigate_page` 跳转到:
    ```
    https://scholar.google.com/scholar?q="FORWARD_SEQ"+"REVERSE_SEQ"+GENE+species
    ```
@@ -105,19 +105,24 @@ python scripts/primer_blast.py -f <F> -r <R> -g <GENE> -s "<SCIENTIFIC_NAME>" --
    - 作者/期刊/年份（`StaticText` 紧跟标题）
    - 被引用次数（`link` 包含"被引用次数：N"）
    - 文章 URL（`link` 的 `url` 属性）
-4. 展示前 3-5 条结果到用户
-5. 如果无结果，可用缩短的查询尝试：仅搜索 `"FORWARD_SEQ" GENE`
-6. 如果 Chrome MCP 不可用或页面加载失败，自动降级到方式 B
+4. 如果无结果，尝试缩短查询：仅搜索 Forward 序列 + 基因名
+5. 提取前 3 条结果保存到内存
 
-**注意**：Chrome MCP 需要真实的 Chrome 浏览器实例。如果搜索过于频繁可能触发 Google 的 CAPTCHA 验证。
+#### 方式 B: WebSearch（始终执行）
 
-#### 方式 B: WebSearch（回退）
-
-如果 Chrome MCP 不可用：
-- 对每对选中引物，用 WebSearch 在 **Google Scholar** 中搜索 forward 序列 + 基因名
+无论 Chrome MCP 是否可用，均执行 WebSearch 检索作为补充：
+- 对每对选中引物，用 WebSearch 搜索 forward 序列 + 基因名
 - 查询格式: `"AGGTCGGTGTGAACGGATTTG" GAPDH`
+- 提取前 3 条结果保存到内存
 
-#### 通用要求（两种方式均适用）
+#### 结果合并
+
+- 将方式 A（如有）和方式 B 的结果**去重合并**（按文章 URL 去重）
+- 保留方式 A 的 Google Scholar 引用次数信息
+- 展示合并后的结果（前 3-5 条）
+- 在文献检索结果中标注每条结果的来源（"Google Scholar" 或 "WebSearch"）
+
+#### 通用要求
 
 - 展示前 3 条结果，按以下优先级呈现：
   1. **学术文献优先** — 期刊论文、学位论文、预印本（含标题、期刊/年份、**带超链接的具体文章 URL**）
@@ -237,8 +242,8 @@ python scripts/primer_blast.py -f <F> -r <R> -g <GENE> -s "<SCIENTIFIC_NAME>" --
 | WebSearch 返回了摘要但无直接 URL | 使用搜索结果中的来源链接（如 PMC/DOI），标注为"搜索结果摘要" |
 | 文献检索只罗列了期刊名未附链接 | **违反规则** — 必须重新搜索并补全具体文章 URL |
 | 用户拒绝保存报告 | 告知结果在对话历史中可查阅 |
-| Chrome MCP 不可用 | 自动降级到 WebSearch 方式检索文献 |
-| Google Scholar 触发 CAPTCHA | 提示用户手动完成后继续，或改用 WebSearch 方式 |
+| Chrome MCP 不可用 | WebSearch 单独执行，仍有结果 |
+| Google Scholar 触发 CAPTCHA | 跳过方式 A，仅用方式 B WebSearch 继续 |
 
 ---
 
