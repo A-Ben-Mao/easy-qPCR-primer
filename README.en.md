@@ -4,6 +4,30 @@
 
 **Automated qPCR primer design pipeline** — NCBI Gene Symbol resolution → PrimerBank search → BLAST verification → literature search
 
+## File Structure
+
+```
+easy-qPCR-primer/
+│
+├── SKILL.md               ← Skill definition (triggers, workflow, edge cases)
+├── _meta.json              ← Metadata (version, license)
+│
+├── README.md               ← Chinese documentation
+├── README.en.md            ← English documentation
+├── LICENSE                 ← MIT License
+│
+└── scripts/
+    ├── primer_blast.py     ← Core script: gene resolution, PrimerBank, BLAST
+    └── requirements.txt    ← Python dependencies (requests)
+```
+
+| File | Purpose |
+|------|---------|
+| `SKILL.md` | Defines skill behavior: triggers, workflow phases, error handling. Claude Code loads this and executes the pipeline |
+| `_meta.json` | Version, publish date, license info |
+| `primer_blast.py` | Wraps NCBI E-utilities and Primer-BLAST API: gene symbol resolution, PrimerBank search, BLAST submission & polling |
+| `requirements.txt` | Python dependency: `requests>=2.25.0` |
+
 ## Features
 
 - **Multi-gene, multi-species** — Search PrimerBank for multiple genes across human and mouse
@@ -75,33 +99,6 @@ GC content      →  F: 52% / R: 43%
 Intended hits   →  Matching RefSeq transcripts
 Off-targets     →  Non-specific hits detected
 ```
-
-## File Structure
-
-```
-easy-qPCR-primer/
-│
-├── SKILL.md               ← Skill definition (triggers, workflow, edge cases)
-├── _meta.json              ← Metadata (version, license)
-│
-├── README.md               ← Chinese documentation
-├── README.en.md            ← English documentation
-├── LICENSE                 ← MIT License
-│
-├── scripts/
-│   ├── primer_blast.py     ← Core script: gene resolution, PrimerBank, BLAST
-│   └── requirements.txt    ← Python dependencies (requests)
-│
-└── evals/                  ← Evaluation test cases
-```
-
-| File | Purpose |
-|------|---------|
-| `SKILL.md` | Defines skill behavior: triggers, workflow phases, error handling. Claude Code loads this and executes the pipeline |
-| `_meta.json` | Version, publish date, license info |
-| `primer_blast.py` | Wraps NCBI E-utilities and Primer-BLAST API: gene symbol resolution, PrimerBank search, BLAST submission & polling |
-| `requirements.txt` | Python dependency: `requests>=2.25.0` |
-| `evals/` | Evaluation test cases for skill verification |
 
 ## License
 
