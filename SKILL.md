@@ -8,7 +8,7 @@ description: >-
   BLAST verification, primer specificity checking, primer literature search.
   Triggers on: 引物设计, qPCR引物, 引物搜索, 引物验证, PrimerBank,
   BLAST验证, 多基因引物, 引物特异性验证, 文献检索引物.
-allowed-tools: Bash(python:*)
+allowed-tools: Bash(python:*), mcp__chrome-devtools__*
 ---
 
 # Easy qPCR Primer
@@ -89,13 +89,40 @@ python scripts/primer_blast.py -f <F> -r <R> -g <GENE> -s "<SCIENTIFIC_NAME>" --
 
 **主动询问用户**："是否需要在 Google Scholar 中检索这些引物在文献中的使用情况？"
 
-如果用户同意：
+**检测 Chrome DevTools MCP 是否可用**：如果系统中安装了 `chrome-devtools` MCP（配置在 `.mcp.json` 中），则优先使用 Chrome 浏览器自动化方式检索 Scholar，否则使用 WebSearch 回退。
+
+#### 方式 A: Chrome DevTools MCP（优先，需安装 chrome-devtools-mcp）
+
+前提条件：检查是否有 `mcp__chrome-devtools__navigate_page` 等工具可用。如果可用：
+
+1. 对每对选中引物，使用 `mcp__chrome-devtools__navigate_page` 跳转到:
+   ```
+   https://scholar.google.com/scholar?q="FORWARD_SEQ"+"REVERSE_SEQ"+GENE+species
+   ```
+2. 使用 `mcp__chrome-devtools__take_snapshot` 获取页面结构
+3. 解析页面快照提取：
+   - 文章标题（`link` 元素）
+   - 作者/期刊/年份（`StaticText` 紧跟标题）
+   - 被引用次数（`link` 包含"被引用次数：N"）
+   - 文章 URL（`link` 的 `url` 属性）
+4. 展示前 3-5 条结果到用户
+5. 如果无结果，可用缩短的查询尝试：仅搜索 `"FORWARD_SEQ" GENE`
+6. 如果 Chrome MCP 不可用或页面加载失败，自动降级到方式 B
+
+**注意**：Chrome MCP 需要真实的 Chrome 浏览器实例。如果搜索过于频繁可能触发 Google 的 CAPTCHA 验证。
+
+#### 方式 B: WebSearch（回退）
+
+如果 Chrome MCP 不可用：
 - 对每对选中引物，用 WebSearch 在 **Google Scholar** 中搜索 forward 序列 + 基因名
 - 查询格式: `"AGGTCGGTGTGAACGGATTTG" GAPDH`
+
+#### 通用要求（两种方式均适用）
+
 - 展示前 3 条结果，按以下优先级呈现：
   1. **学术文献优先** — 期刊论文、学位论文、预印本（含标题、期刊/年份、**带超链接的具体文章 URL**）
   2. **商品化信息居后** — OriGene、Bio-Rad 等商品引物页放在最后，并标注为"商品化引物"而非文献
-- **关键要求：必须包含 WebSearch 返回的具体文章 URL（用 Markdown 链接格式 `[标题](URL)`），禁止只罗列期刊名称而不附链接**
+- **关键要求：必须包含具体的文章 URL（用 Markdown 链接格式 `[标题](URL)`），禁止只罗列期刊名称而不附链接**
 - 将文献检索结果保存在内存中，待最终报告一并输出
 - 说明：搜索结果仅供参考，用户需自行浏览全文确认引物使用细节
 
@@ -210,6 +237,8 @@ python scripts/primer_blast.py -f <F> -r <R> -g <GENE> -s "<SCIENTIFIC_NAME>" --
 | WebSearch 返回了摘要但无直接 URL | 使用搜索结果中的来源链接（如 PMC/DOI），标注为"搜索结果摘要" |
 | 文献检索只罗列了期刊名未附链接 | **违反规则** — 必须重新搜索并补全具体文章 URL |
 | 用户拒绝保存报告 | 告知结果在对话历史中可查阅 |
+| Chrome MCP 不可用 | 自动降级到 WebSearch 方式检索文献 |
+| Google Scholar 触发 CAPTCHA | 提示用户手动完成后继续，或改用 WebSearch 方式 |
 
 ---
 

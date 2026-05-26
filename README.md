@@ -34,6 +34,8 @@ easy-qPCR-primer/
 - **NCBI Gene Symbol 自动解析** — 输入别名，自动转换为官方 Gene Symbol
 - **Primer-BLAST 验证** — 逐对验证引物在 RefSeq 数据库中的特异性
 - **文献检索** — 可选在 Google Scholar 中检索引物的文献使用情况
+  - 优先通过 **Chrome DevTools MCP** 自动化检索（如已安装）
+  - 自动降级到 WebSearch 回退方案
 - **完整报告** — 生成结构化 Markdown 报告，便于保存和分享
 
 ## 使用方式
@@ -74,7 +76,7 @@ python scripts/primer_blast.py -f AGGTCGGTGTGAACGGATTTG -r TGTAGACCATGTAGTTGAGGT
 | 3. 用户选择 | 选取需要 BLAST 验证的引物 |
 | 4. BLAST 验证 | 逐对验证引物特异性 |
 | 5. 结果汇总 | 产物长度、Tm、GC%、脱靶分析 |
-| 6. 文献检索（可选） | Google Scholar 检索引物引用 |
+| 6. 文献检索（可选） | Google Scholar 检索引物引用（Chrome MCP / WebSearch） |
 | 7. 报告生成 | 保存完整 Markdown 报告 |
 
 ## 支持物种

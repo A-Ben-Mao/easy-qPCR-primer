@@ -34,6 +34,8 @@ easy-qPCR-primer/
 - **Auto Symbol Resolution** — Input an alias, get the official NCBI Gene Symbol
 - **Primer-BLAST Verification** — Validates each primer pair against RefSeq
 - **Literature Search** — Optionally check Google Scholar for primer usage references
+  - Prioritizes **Chrome DevTools MCP** automation (if installed)
+  - Auto-falls back to WebSearch
 - **Full Report** — Structured Markdown output for saving and sharing
 
 ## Usage
@@ -74,7 +76,7 @@ python scripts/primer_blast.py -f AGGTCGGTGTGAACGGATTTG -r TGTAGACCATGTAGTTGAGGT
 | 3. User Selection | Pick primers for BLAST verification |
 | 4. BLAST Verification | Validate specificity of each pair |
 | 5. Results Summary | Product length, Tm, GC%, off-targets |
-| 6. Literature Search (opt.) | Google Scholar primer lookup |
+| 6. Literature Search (opt.) | Google Scholar primer lookup (Chrome MCP / WebSearch) |
 | 7. Report Generation | Save complete Markdown report |
 
 ## Supported Species
