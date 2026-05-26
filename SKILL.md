@@ -1,8 +1,8 @@
 ---
 name: easy-qPCR-primer
 description: >-
-  Easy qPCR primer design and verification pipeline.
-  PrimerBank search + NCBI BLAST verification + literature search.
+  Easy qPCR primer design and verification pipeline for Claude Code.
+  PrimerBank search + NCBI BLAST verification + real literature search (Google Scholar via Chrome MCP or WebSearch).
   Supports multi-gene, multi-species primer searches.
   Use when user asks about: primer design, qPCR primers, PrimerBank search,
   BLAST verification, primer specificity checking, primer literature search.

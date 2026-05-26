@@ -2,6 +2,8 @@
 
 # Easy qPCR Primer
 
+> 🧬 **Claude Code Agent Skill** — Invoke directly in Claude Code, no manual dependency setup required.
+
 **Automated qPCR primer design + specificity verification + real literature validation**
 
 One pipeline: gene name → PrimerBank primer retrieval → BLAST specificity check → search published papers that actually used your primers. See **which real studies have used your primers**, not just algorithmic predictions.

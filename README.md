@@ -2,6 +2,8 @@
 
 # Easy qPCR Primer
 
+> 🧬 **Claude Code Agent Skill** — 在 Claude Code 中直接使用，无需手动安装依赖
+
 **全自动 qPCR 引物设计 + 特异性验证 + 真实文献引用检索**
 
 一键完成：从基因名到 PrimerBank 引物获取 → BLAST 特异性验证 → 在已发表文献中检索该引物的真实使用情况。不再只依赖算法预测，而是看到你的引物**到底被哪些论文实际用过**。
