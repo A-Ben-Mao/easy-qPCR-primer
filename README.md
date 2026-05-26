@@ -73,8 +73,9 @@ python scripts/primer_blast.py -f AGGTCGGTGTGAACGGATTTG -r TGTAGACCATGTAGTTGAGGT
 
 ## 环境要求
 
-- **有网络连接** — agent 会帮你处理剩下的事情
+- **稳定的网络连接** — agent 会帮你处理剩下的事情，大概率需要科学上网
 - Python 3.8+（依赖 `requests`，agent 会自动安装）
+- 再次推荐安装 Chrome DevTools MCP：`claude mcp add chrome-devtools --scope user npx chrome-devtools-mcp@latest`
 
 ## 工作流程
 
