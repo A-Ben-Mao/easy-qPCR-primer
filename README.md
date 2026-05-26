@@ -2,7 +2,9 @@
 
 # Easy qPCR Primer
 
-**qPCR 引物设计自动化流程** — NCBI Gene Symbol 转换 → PrimerBank 搜索 → BLAST 验证 → 文献检索
+**全自动 qPCR 引物设计 + 特异性验证 + 真实文献引用检索**
+
+一键完成：从基因名到 PrimerBank 引物获取 → BLAST 特异性验证 → 在已发表文献中检索该引物的真实使用情况。不再只依赖算法预测，而是看到你的引物**到底被哪些论文实际用过**。
 
 ## 文件结构
 
@@ -33,11 +35,15 @@ easy-qPCR-primer/
 - **多基因多物种** — 同时搜索多个基因的 PrimerBank 引物，支持人、小鼠
 - **NCBI Gene Symbol 自动解析** — 输入别名，自动转换为官方 Gene Symbol
 - **Primer-BLAST 验证** — 逐对验证引物在 RefSeq 数据库中的特异性
-- **文献检索** — 可选在 Google Scholar 中检索引物的文献使用情况
-  - 优先通过 **Chrome DevTools MCP** 自动化检索 Scholar
-  - 同时执行 **WebSearch** 作为补充，结果去重合并
-  - 如触发 CAPTCHA，用户可手动验证后继续或跳过
+- **真实文献检索** — 自动检索每对引物在已发表论文中的实际使用情况
+  - 安装 [Chrome DevTools MCP](https://www.npmjs.com/package/chrome-devtools-mcp) 后，直接操作 **Google Scholar** 检索，包含引用次数
+  - 未安装时自动调用 **WebSearch** 全网检索，同样能找到真实文献
+  - 两种方式并行运行、去重合并，覆盖更全
+  - 每条结果附带文章标题、期刊年份、**可点击的文章链接**
 - **完整报告** — 生成结构化 Markdown 报告，便于保存和分享
+
+> 💡 **推荐安装 Chrome DevTools MCP**：`claude mcp add chrome-devtools --scope user npx chrome-devtools-mcp@latest`
+> 安装后可获得 Google Scholar 直接检索能力，包含被引次数等额外信息。
 
 ## 使用方式
 
@@ -77,7 +83,7 @@ python scripts/primer_blast.py -f AGGTCGGTGTGAACGGATTTG -r TGTAGACCATGTAGTTGAGGT
 | 3. 用户选择 | 选取需要 BLAST 验证的引物 |
 | 4. BLAST 验证 | 逐对验证引物特异性 |
 | 5. 结果汇总 | 产物长度、Tm、GC%、脱靶分析 |
-| 6. 文献检索（可选） | Google Scholar 检索引物引用（Chrome MCP / WebSearch） |
+| 6. 文献检索（可选） | 自动检索引物在真实文献中的使用（Chrome MCP + WebSearch） |
 | 7. 报告生成 | 保存完整 Markdown 报告 |
 
 ## 支持物种

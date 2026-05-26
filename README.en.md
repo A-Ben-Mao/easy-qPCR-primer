@@ -2,7 +2,9 @@
 
 # Easy qPCR Primer
 
-**Automated qPCR primer design pipeline** — NCBI Gene Symbol resolution → PrimerBank search → BLAST verification → literature search
+**Automated qPCR primer design + specificity verification + real literature validation**
+
+One pipeline: gene name → PrimerBank primer retrieval → BLAST specificity check → search published papers that actually used your primers. See **which real studies have used your primers**, not just algorithmic predictions.
 
 ## File Structure
 
@@ -33,11 +35,16 @@ easy-qPCR-primer/
 - **Multi-gene, multi-species** — Search PrimerBank for multiple genes across human and mouse
 - **Auto Symbol Resolution** — Input an alias, get the official NCBI Gene Symbol
 - **Primer-BLAST Verification** — Validates each primer pair against RefSeq
-- **Literature Search** — Optionally check Google Scholar for primer usage references
-  - Prioritizes **Chrome DevTools MCP** for Scholar search
-  - Runs **WebSearch** in parallel for supplementary results, deduplicated
-  - CAPTCHA prompts user to verify manually or skip
+- **Real Literature Search** — Automatically checks if each primer pair has been used in published studies
+  - With [Chrome DevTools MCP](https://www.npmjs.com/package/chrome-devtools-mcp): directly searches **Google Scholar** with citation counts
+  - Without it: falls back to **WebSearch** — still finds real published papers
+  - Both methods run in parallel, results deduplicated and merged
+  - Every result includes article title, journal/year, and **clickable article URL**
 - **Full Report** — Structured Markdown output for saving and sharing
+
+> 💡 **Recommended: install Chrome DevTools MCP**
+> `claude mcp add chrome-devtools --scope user npx chrome-devtools-mcp@latest`
+> Enables Google Scholar search with citation counts and better coverage.
 
 ## Usage
 
@@ -77,7 +84,7 @@ python scripts/primer_blast.py -f AGGTCGGTGTGAACGGATTTG -r TGTAGACCATGTAGTTGAGGT
 | 3. User Selection | Pick primers for BLAST verification |
 | 4. BLAST Verification | Validate specificity of each pair |
 | 5. Results Summary | Product length, Tm, GC%, off-targets |
-| 6. Literature Search (opt.) | Google Scholar primer lookup (Chrome MCP / WebSearch) |
+| 6. Literature Search (opt.) | Real-world primer usage lookup (Chrome MCP + WebSearch) |
 | 7. Report Generation | Save complete Markdown report |
 
 ## Supported Species
