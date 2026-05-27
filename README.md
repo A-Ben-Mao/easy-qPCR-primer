@@ -8,6 +8,8 @@
 
 一键完成：从基因名到 PrimerBank 引物获取 → BLAST 特异性验证 → 在已发表文献中检索该引物的真实使用情况。不再只依赖算法预测，而是看到你的引物**到底被哪些论文实际用过**。
 
+支持 **全自动**（一键全流程）和 **半自动**（逐步手动确认）两种模式。结果按基因保存为独立文件到 `primer_results/` 目录。
+
 ## 文件结构
 
 ```
@@ -34,6 +36,7 @@ easy-qPCR-primer/
 
 ## 功能特性
 
+- **两种运行模式** — 全自动（一键完成）无需手动干预；半自动（逐步确认）适合精细控制
 - **多基因多物种** — 同时搜索多个基因的 PrimerBank 引物，支持人、小鼠
 - **NCBI Gene Symbol 自动解析** — 输入别名，自动转换为官方 Gene Symbol
 - **Primer-BLAST 验证** — 逐对验证引物在 RefSeq 数据库中的特异性
@@ -42,7 +45,7 @@ easy-qPCR-primer/
   - 未安装时自动调用 **WebSearch** 全网检索，同样能找到真实文献
   - 两种方式并行运行、去重合并，覆盖更全
   - 每条结果附带文章标题、期刊年份、**可点击的文章链接**
-- **完整报告** — 生成结构化 Markdown 报告，便于保存和分享
+- **按基因独立报告** — 每个基因生成单独的 Markdown 文件，保存到 `primer_results/` 目录
 
 > 💡 **推荐安装 Chrome DevTools MCP**：`claude mcp add chrome-devtools --scope user npx chrome-devtools-mcp@latest`
 > 安装后可获得 Google Scholar 直接检索能力，包含被引次数等额外信息。
@@ -79,15 +82,16 @@ python scripts/primer_blast.py -f AGGTCGGTGTGAACGGATTTG -r TGTAGACCATGTAGTTGAGGT
 
 ## 工作流程
 
-| 步骤 | 说明 |
-|------|------|
-| 1. Gene Symbol 解析 | 将基因别名转换为 NCBI 官方符号 |
-| 2. PrimerBank 搜索 | 从 PrimerBank 数据库获取引物对 |
-| 3. 用户选择 | 选取需要 BLAST 验证的引物 |
-| 4. BLAST 验证 | 逐对验证引物特异性 |
-| 5. 结果汇总 | 产物长度、Tm、GC%、脱靶分析 |
-| 6. 文献检索（可选） | 自动检索引物在真实文献中的使用（Chrome MCP + WebSearch） |
-| 7. 报告生成 | 保存完整 Markdown 报告 |
+| 步骤 | 全自动模式 | 半自动模式 |
+|:----:|:-----------|:-----------|
+| 0. 选择模式 | 默认 | 可切换到半自动 |
+| 1. Gene Symbol 解析 | ✅ 自动 | ✅ 自动 |
+| 2. PrimerBank 搜索 | ✅ 自动 | ✅ 自动 |
+| 3. 引物选择 | 🤖 自动选已验证引物 | ✋ 用户手动选择 |
+| 4. BLAST 验证 | ✅ 自动逐对验证 | ✅ 逐对验证 |
+| 5. 文献检索 | 🤖 默认执行（不询问） | ✋ 询问是否执行 |
+| 6. 报告保存 | 📁 按基因存独立文件 | 📁 按基因存独立文件 |
+| 7. 询问保存 | ✅ 最后确认一次 | ✅ 最后确认一次 |
 
 ## 支持物种
 

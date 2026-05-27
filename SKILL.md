@@ -13,7 +13,9 @@ allowed-tools: Bash(python:*), mcp__chrome-devtools__*
 
 # Easy qPCR Primer
 
-引物设计全流程工具：NCBI Gene Symbol 转换 → PrimerBank 搜索 → BLAST 验证 → 文献检索（可选）
+引物设计全流程工具：NCBI Gene Symbol 转换 → PrimerBank 搜索 → BLAST 验证 → 文献检索。
+支持**全自动**（一键完成）和**半自动**（逐步确认）两种模式。
+结果按基因保存为独立文件到 `primer_results/` 目录。
 
 ---
 
@@ -26,6 +28,15 @@ allowed-tools: Bash(python:*), mcp__chrome-devtools__*
 ---
 
 ## 工作流
+
+### Phase 0: 选择运行模式
+
+**主动询问用户**选择模式：
+
+1. **全自动模式** — 输入物种和基因后自动执行全流程：自动选择 PrimerBank 已验证引物 → BLAST 验证 → 自动文献检索（已安装 Chrome MCP 则双检索）→ 按基因保存单文件报告。全程无需手动干预，只需最后确认是否保存。
+2. **半自动模式** — 当前流程：用户在每个关键步骤可手动选择和确认（引物选择、文献检索等），适合需要精细控制的场景。
+
+**如果用户未明确指定模式，默认使用全自动模式。**
 
 ### Phase 1A: NCBI Gene Symbol 转换
 
@@ -52,7 +63,17 @@ python scripts/primer_blast.py primerbank -g <GENE_SYMBOL> -s <SPECIES> --json
 - 跨物种查询: 按 (物种, 基因) 分组，每组调用一次
 - 输出 JSON 包含每个引物对的: primerbank_id, forward/reverse 序列, Length, Tm, Location, validated 状态（是否经过实验验证）
 
-### Phase 2: 用户选择引物
+### Phase 2: 引物选择（分支）
+
+#### 全自动模式 — Phase 2A: 自动选择
+
+对每个基因自动选择 1 对引物：
+1. **优先选择 PrimerBank 已验证的引物**（validated = true）
+2. 如果有多个已验证引物，优先选择产物最短的（80-150bp 最佳）
+3. 如果某基因没有已验证引物，选择第一个未验证引物
+4. 向用户展示自动选择的结果摘要，说明选择依据
+
+#### 半自动模式 — Phase 2B: 用户选择
 
 1. 将 PrimerBank 返回的 JSON 保存在内存中（**不要写入文件**）
 2. 向用户展示摘要（每个基因找到 N 对引物，区分已验证/未验证）
@@ -63,7 +84,7 @@ python scripts/primer_blast.py primerbank -g <GENE_SYMBOL> -s <SPECIES> --json
 
 ### Phase 3: BLAST 验证
 
-对用户选中的每对引物依次执行，使用 JSON 输出收集结果（不写入文件）：
+对选中的每对引物依次执行，使用 JSON 输出收集结果（不写入文件）：
 
 ```bash
 python scripts/primer_blast.py -f <F> -r <R> -g <GENE> -s "<SCIENTIFIC_NAME>" --json
@@ -85,9 +106,10 @@ python scripts/primer_blast.py -f <F> -r <R> -g <GENE> -s "<SCIENTIFIC_NAME>" --
 
 推荐最佳引物：优先选 特异性好 + 已验证 + Tm 差异 < 2°C 的
 
-### Phase 5 (可选): 文献检索
+### Phase 5: 文献检索
 
-**主动询问用户**："是否需要在 Google Scholar 中检索这些引物在文献中的使用情况？"
+- **全自动模式**：默认执行文献检索，不询问用户
+- **半自动模式**：**主动询问用户**"是否需要在 Google Scholar 中检索这些引物在文献中的使用情况？"
 
 **检测 Chrome DevTools MCP 是否可用**：检查是否有 `mcp__chrome-devtools__navigate_page` 等工具可用。如果可用，**两种检索方式并行运行**，互相补充，取并集结果。
 
@@ -131,83 +153,68 @@ python scripts/primer_blast.py -f <F> -r <R> -g <GENE> -s "<SCIENTIFIC_NAME>" --
 - 将文献检索结果保存在内存中，待最终报告一并输出
 - 说明：搜索结果仅供参考，用户需自行浏览全文确认引物使用细节
 
-### Phase 6: 保存最终报告
+### Phase 6: 保存报告
 
 所有步骤完成后：
 
-1. 在内存中构建完整的 Markdown 报告（按下方模板格式，含：查询信息 → 按基因分组的 PrimerBank 结果 → BLAST 验证结果 → 文献检索结果）
-2. **询问用户**："是否需要将详细结果保存为 Markdown 文件？建议保存，方便后续查阅。"
+1. 在内存中构建报告：
+   - 每个基因生成一份独立的 Markdown 报告（按下方单基因模板格式）
+   - 报告包含：查询信息 → PrimerBank 结果 → BLAST 验证结果 → 文献检索结果
+2. **询问用户**："是否需要将结果保存为 Markdown 文件？建议保存，方便后续查阅。"
 3. 如果用户同意：
-   - 让用户提供**文件保存目录**
-   - 使用该目录，生成文件名: `primer_report_<GENES>_<YYYYMMDD_HHMM>.md`
-   - 用 Write 工具写入文件，并告知用户已保存
+   - 使用默认目录 `primer_results`（相对当前工作目录），如不存在则自动创建
+   - 每个基因保存为单独文件，文件名格式: `primer_<GENE>_<YYYYMMDD_HHMM>.md`
+   - 例如：`primer_Gapdh_20260527_1430.md`、`primer_Actb_20260527_1430.md`
+   - 用 Write 工具逐一写入文件，并告知用户已保存
 4. 如果用户拒绝，告知用户结果在对话记录中可随时查阅
 
 ---
 
-## Markdown 报告模板
+## 单基因报告模板
+
+每份报告保存为 `primer_results/primer_<GENE>_<YYYYMMDD_HHMM>.md`：
 
 ```markdown
-# 引物设计报告
+# 引物设计报告 — {GENE}
 
 ## 查询信息
 - **物种**: {species}
-- **基因**: {genes}
+- **基因**: {gene_symbol} ({gene_description})
 - **搜索时间**: {datetime}
-- **总引物对数**: {count}
 
 ---
 
-## PrimerBank 搜索结果
-
-### {GENE_1}
-**物种**: {species} | **共 N 对引物**
-
-#### 引物对 #1
-**PrimerBank ID**: 126012538c1 | **Amplicon**: 95 bp | **已验证**: ✅
+## 选择引物
+**PrimerBank ID**: {primerbank_id} | **Amplicon**: {product_length} bp | **已验证**: ✅
 
 | | Sequence (5'→3') | Length | Tm | Location |
 |---|-------------------|--------|----|----------|
-| **Forward** | `AGGTCGGTGTGAACGGATTTG` | 21 | 62.6°C | 8-28 |
-| **Reverse** | `GGGGTCGTTGATGGCAACA` | 19 | 62.6°C | 102-84 |
-
-#### 引物对 #2
-...
-
-### {GENE_2}
-**物种**: {species} | **共 M 对引物**
-
-#### 引物对 #1
-...
+| **Forward** | `{forward_seq}` | {len} | {tm}°C | {loc} |
+| **Reverse** | `{reverse_seq}` | {len} | {tm}°C | {loc} |
 
 ---
 
 ## BLAST 验证结果
+**Forward**: `{forward_seq}` | **Reverse**: `{reverse_seq}`
+**产物**: {product_length} bp | **Tm**: {f_tm}°C / {r_tm}°C
 
-### {GENE_1} — Pair 1 (126012538c1)
-**Forward**: `AGGTCGGTGTGAACGGATTTG` | **Reverse**: `GGGGTCGTTGATGGCAACA`
-**产物**: 95 bp | **Tm**: 60.9°C / 60.6°C
-
-#### 特异性评估
+### 特异性评估
 - **状态**: ✅ 特异性良好 — 无非特异性靶标
 
-##### Intended Targets
+#### Intended Targets
 | Accession | Description |
 |-----------|-------------|
-| NM_008084.4 | Mus musculus GAPDH, transcript variant 2, mRNA |
+| {accession} | {description} |
 
 ---
 
 ## 文献检索结果
-
-### {GENE_1} — F: `CACAGGTCACCCTCGATTTTT`
+**F**: `{forward_seq}`
 | # | 标题 / 来源 | 期刊/年份 |
 |---|------------|----------|
 | 1 | [Article Title](https://example.com/article) | Journal, 2024 |
-| 2 | [Another Study](https://example.com/study) | Journal, 2023 |
-| 3 | [Product Page](https://origene.com/xxx) (商品化引物) | OriGene |
 
-> **注意**：搜索结果仅供参考。建议点击链接浏览全文，确认引物使用细节。部分来源可能为商品化引物对。
+> **注意**：搜索结果仅供参考。建议点击链接浏览全文，确认引物使用细节。
 ```
 
 ---
@@ -244,6 +251,9 @@ python scripts/primer_blast.py -f <F> -r <R> -g <GENE> -s "<SCIENTIFIC_NAME>" --
 | 用户拒绝保存报告 | 告知结果在对话历史中可查阅 |
 | Chrome MCP 不可用 | WebSearch 单独执行，仍有结果 |
 | Google Scholar 触发 CAPTCHA | 询问用户是否手动完成验证：如用户完成验证后告知，继续方式 A；如用户选择跳过，仅用方式 B WebSearch 继续 |
+| 全自动模式无已验证引物 | 自动选择第一个未验证引物，并告知用户 |
+| 全自动模式下文献检索 | 默认执行，不询问用户 |
+| 保存目录不存在 | 自动创建 `primer_results/` 目录 |
 
 ---
 

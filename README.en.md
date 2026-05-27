@@ -8,6 +8,8 @@
 
 One pipeline: gene name → PrimerBank primer retrieval → BLAST specificity check → search published papers that actually used your primers. See **which real studies have used your primers**, not just algorithmic predictions.
 
+Supports **full-auto** (one-click pipeline) and **semi-auto** (step-by-step manual confirmation) modes. Results saved as individual gene files in the `primer_results/` directory.
+
 ## File Structure
 
 ```
@@ -34,6 +36,7 @@ easy-qPCR-primer/
 
 ## Features
 
+- **Two Modes** — Full-auto (one-click pipeline) or Semi-auto (step-by-step manual confirmation)
 - **Multi-gene, multi-species** — Search PrimerBank for multiple genes across human and mouse
 - **Auto Symbol Resolution** — Input an alias, get the official NCBI Gene Symbol
 - **Primer-BLAST Verification** — Validates each primer pair against RefSeq
@@ -42,7 +45,7 @@ easy-qPCR-primer/
   - Without it: falls back to **WebSearch** — still finds real published papers
   - Both methods run in parallel, results deduplicated and merged
   - Every result includes article title, journal/year, and **clickable article URL**
-- **Full Report** — Structured Markdown output for saving and sharing
+- **Per-Gene Reports** — Each gene gets its own Markdown file in `primer_results/` directory
 
 > 💡 **Recommended: install Chrome DevTools MCP**
 > `claude mcp add chrome-devtools --scope user npx chrome-devtools-mcp@latest`
@@ -79,15 +82,16 @@ python scripts/primer_blast.py -f AGGTCGGTGTGAACGGATTTG -r TGTAGACCATGTAGTTGAGGT
 
 ## Workflow
 
-| Step | Description |
-|------|-------------|
-| 1. Gene Symbol Resolution | Convert aliases to official NCBI symbols |
-| 2. PrimerBank Search | Retrieve primer pairs from PrimerBank |
-| 3. User Selection | Pick primers for BLAST verification |
-| 4. BLAST Verification | Validate specificity of each pair |
-| 5. Results Summary | Product length, Tm, GC%, off-targets |
-| 6. Literature Search (opt.) | Real-world primer usage lookup (Chrome MCP + WebSearch) |
-| 7. Report Generation | Save complete Markdown report |
+| Step | Full-Auto | Semi-Auto |
+|:----:|:-----------|:-----------|
+| 0. Mode Select | Default | Can switch |
+| 1. Symbol Resolution | ✅ Auto | ✅ Auto |
+| 2. PrimerBank Search | ✅ Auto | ✅ Auto |
+| 3. Primer Selection | 🤖 Auto (validated pairs) | ✋ Manual selection |
+| 4. BLAST Verify | ✅ Auto | ✅ Run per pair |
+| 5. Literature Search | 🤖 Default on | ✋ Ask user |
+| 6. Save Reports | 📁 Per gene files | 📁 Per gene files |
+| 7. Confirm Save | ✅ Yes/no at end | ✅ Yes/no at end |
 
 ## Supported Species
 
