@@ -132,9 +132,9 @@ python scripts/primer_blast.py -f <F> -r <R> -g <GENE> -s "<SCIENTIFIC_NAME>" --
    - 文章 URL（`link` 的 `url` 属性）
 4. 提取前 3 条结果保存到内存
 5. **降级策略**：如果双引物搜索无结果，依次尝试：
-   - 仅搜索 Forward 序列：`"FORWARD_SEQ"`
-   - 仍无结果则仅搜索 Reverse 序列：`"REVERSE_SEQ"`
-   - 单序列搜索可命中未列出完整引物对、仅方法部分提到一条序列的文献
+   - 仅搜索 Forward 序列 + 基因名：`"FORWARD_SEQ" GENE`
+   - 仍无结果则仅搜索 Reverse 序列 + 基因名：`"REVERSE_SEQ" GENE`
+   - 加基因名可排除非特异性匹配，单序列搜索可命中未列出完整引物对、仅方法部分提到一条序列的文献
 
 #### 方式 B: WebSearch（始终执行）
 
@@ -252,7 +252,7 @@ python scripts/primer_blast.py -f <F> -r <R> -g <GENE> -s "<SCIENTIFIC_NAME>" --
 | 自定义引物验证 | 用户直接提供序列时跳过 Phase 1-2 |
 | 大量选择（>10 对） | 提示预计耗时 N 分钟，让用户确认 |
 | 文献搜索无结果 | Chrome MCP 自动降级为仅搜索 Forward/Reverse 单序列；WebSearch 默认只搜 Forward 单序列 |
-| Chrome MCP 双引物搜索无结果 | 自动降级为仅搜索 Forward 序列，仍无则仅搜索 Reverse 序列 |
+| Chrome MCP 双引物搜索无结果 | 自动降级为 `"FORWARD_SEQ" GENE`；仍无则 `"REVERSE_SEQ" GENE` |
 | WebSearch 返回了摘要但无直接 URL | 使用搜索结果中的来源链接（如 PMC/DOI），标注为"搜索结果摘要" |
 | 文献检索只罗列了期刊名未附链接 | **违反规则** — 必须重新搜索并补全具体文章 URL |
 | 用户拒绝保存报告 | 告知结果在对话历史中可查阅 |
