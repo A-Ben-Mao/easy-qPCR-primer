@@ -114,6 +114,8 @@ python scripts/primer_blast.py -f <F> -r <R> -g <GENE> -s "<SCIENTIFIC_NAME>" --
 - **全自动模式**：默认执行文献检索，不询问用户
 - **半自动模式**：**主动询问用户**"是否需要在 Google Scholar 中检索这些引物在文献中的使用情况？"
 
+> ⚠️ **覆盖范围**：所有纳入 BLAST 验证的引物对（含多对引物的基因），均需逐一进行文献检索，不限于最终优选结果。每对引物的搜索结果独立保存，最终报告中各引物对均有对应的文献检索记录。
+
 **检测 Chrome DevTools MCP 是否可用**：检查是否有 `mcp__chrome-devtools__navigate_page` 等工具可用。如果可用，**两种检索方式并行运行**，互相补充，取并集结果。
 
 #### 方式 A: Chrome DevTools MCP（如已安装则启用）
