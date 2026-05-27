@@ -122,7 +122,7 @@ python scripts/primer_blast.py -f <F> -r <R> -g <GENE> -s "<SCIENTIFIC_NAME>" --
 
 1. 使用 `mcp__chrome-devtools__navigate_page` 跳转到:
    ```
-   https://scholar.google.com/scholar?q="FORWARD_SEQ"+"REVERSE_SEQ"+GENE+species
+   https://scholar.google.com/scholar?q="FORWARD_SEQ"+"REVERSE_SEQ"+GENE
    ```
 2. 使用 `mcp__chrome-devtools__take_snapshot` 获取页面结构
 3. 解析页面快照提取：
@@ -131,17 +131,16 @@ python scripts/primer_blast.py -f <F> -r <R> -g <GENE> -s "<SCIENTIFIC_NAME>" --
    - 被引用次数（`link` 包含"被引用次数：N"）
    - 文章 URL（`link` 的 `url` 属性）
 4. 提取前 3 条结果保存到内存
-5. **降级策略**：如果双引物查询无结果，依次尝试：
-   - 仅搜索 Forward 序列 + 基因名：`"FORWARD_SEQ" GENE species`
-   - 仅搜索 Reverse 序列 + 基因名：`"REVERSE_SEQ" GENE species`
-   - 这些较短的查询可能命中未列出完整引物对的文献（如引物在方法部分以文字描述而非完整序列列出）
+5. **降级策略**：如果双引物搜索无结果，依次尝试：
+   - 仅搜索 Forward 序列：`"FORWARD_SEQ"`
+   - 仍无结果则仅搜索 Reverse 序列：`"REVERSE_SEQ"`
+   - 单序列搜索可命中未列出完整引物对、仅方法部分提到一条序列的文献
 
 #### 方式 B: WebSearch（始终执行）
 
 无论 Chrome MCP 是否可用，均执行 WebSearch 检索作为补充：
-- 对每对选中引物，用 WebSearch 搜索 forward 序列 + 基因名
+- 直接搜索 Forward 序列（不加 Reverse，因 WebSearch 对长查询匹配率低）
 - 查询格式: `"AGGTCGGTGTGAACGGATTTG" GAPDH`
-- 如果双引物查询无结果，降级为仅搜索 Forward 序列 + 基因名
 - 提取前 3 条结果保存到内存
 
 #### 结果合并
@@ -252,8 +251,8 @@ python scripts/primer_blast.py -f <F> -r <R> -g <GENE> -s "<SCIENTIFIC_NAME>" --
 | Python 不可用 | 提示 `pip install requests` |
 | 自定义引物验证 | 用户直接提供序列时跳过 Phase 1-2 |
 | 大量选择（>10 对） | 提示预计耗时 N 分钟，让用户确认 |
-| 文献搜索无结果 | 自动降级：仅搜索 Forward 序列 + 基因名；仍无结果则仅搜索 Reverse 序列 + 基因名 |
-| Chrome MCP 搜索无结果 | 自动降级为仅搜索 Forward/Reverse 单引物 + 基因名 |
+| 文献搜索无结果 | Chrome MCP 自动降级为仅搜索 Forward/Reverse 单序列；WebSearch 默认只搜 Forward 单序列 |
+| Chrome MCP 双引物搜索无结果 | 自动降级为仅搜索 Forward 序列，仍无则仅搜索 Reverse 序列 |
 | WebSearch 返回了摘要但无直接 URL | 使用搜索结果中的来源链接（如 PMC/DOI），标注为"搜索结果摘要" |
 | 文献检索只罗列了期刊名未附链接 | **违反规则** — 必须重新搜索并补全具体文章 URL |
 | 用户拒绝保存报告 | 告知结果在对话历史中可查阅 |
