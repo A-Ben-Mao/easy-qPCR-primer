@@ -51,6 +51,14 @@ easy-qPCR-primer/
 > `claude mcp add chrome-devtools --scope user npx chrome-devtools-mcp@latest`
 > Enables Google Scholar search with citation counts and better coverage.
 
+## Install
+
+```bash
+npx skills add A-Ben-Mao/easy-qPCR-primer
+```
+
+> If you encounter network issues, download the latest zip from [GitHub Releases](https://github.com/A-Ben-Mao/easy-qPCR-primer/releases) and extract to `~/.claude/skills/easy-qPCR-primer/` manually (zip may not be the latest version).
+
 ## Usage
 
 Invoke through Claude Code:

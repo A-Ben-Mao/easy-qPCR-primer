@@ -50,9 +50,17 @@ easy-qPCR-primer/
 > 💡 **推荐安装 Chrome DevTools MCP**：`claude mcp add chrome-devtools --scope user npx chrome-devtools-mcp@latest`
 > 安装后可获得 Google Scholar 直接检索能力，包含被引次数等额外信息。
 
+## 安装
+
+```bash
+npx skills add A-Ben-Mao/easy-qPCR-primer
+```
+
+> 若遇到网络问题，也可从 [GitHub Releases](https://github.com/A-Ben-Mao/easy-qPCR-primer/releases) 下载最新 zip，解压到 `~/.claude/skills/easy-qPCR-primer/` 目录手动安装（zip 版本可能不是最新）。
+
 ## 使用方式
 
-在 Claude Code 中直接提出需求即可，例如：
+安装后在 Claude Code 中直接提出需求即可，例如：
 
 - `设计小鼠 GAPDH 和 ACTB 的 qPCR 引物`
 - `搜索人类的 TP53 PrimerBank 引物`
