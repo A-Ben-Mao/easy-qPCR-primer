@@ -84,9 +84,8 @@ python scripts/primer_blast.py -f AGGTCGGTGTGAACGGATTTG -r TGTAGACCATGTAGTTGAGGT
 
 ## 环境要求
 
-- **稳定的网络连接** — agent 会帮你处理剩下的事情，大概率需要科学上网
+- **稳定的网络连接** — agent 会帮你处理剩下的事情
 - Python 3.8+（依赖 `requests`，agent 会自动安装）
-- 再次推荐安装 Chrome DevTools MCP：`claude mcp add chrome-devtools --scope user npx chrome-devtools-mcp@latest`
 
 ## 工作流程
 
@@ -97,9 +96,8 @@ python scripts/primer_blast.py -f AGGTCGGTGTGAACGGATTTG -r TGTAGACCATGTAGTTGAGGT
 | 2. PrimerBank 搜索 | ✅ 自动 | ✅ 自动 |
 | 3. 引物选择 | 🤖 自动选已验证引物 | ✋ 用户手动选择 |
 | 4. BLAST 验证 | ✅ 自动逐对验证 | ✅ 逐对验证 |
-| 5. 文献检索 | 🤖 默认执行（不询问） | ✋ 询问是否执行 |
-| 6. 报告保存 | 📁 按基因存独立文件 | 📁 按基因存独立文件 |
-| 7. 询问保存 | ✅ 最后确认一次 | ✅ 最后确认一次 |
+| 5. 文献检索 | 🤖 默认执行 | ✋ 询问是否执行 |
+| 6. 报告保存 | 📁 自动保存不询问 | 📁 询问后保存 |
 
 ## 支持物种
 

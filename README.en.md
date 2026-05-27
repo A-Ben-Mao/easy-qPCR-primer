@@ -98,8 +98,7 @@ python scripts/primer_blast.py -f AGGTCGGTGTGAACGGATTTG -r TGTAGACCATGTAGTTGAGGT
 | 3. Primer Selection | 🤖 Auto (validated pairs) | ✋ Manual selection |
 | 4. BLAST Verify | ✅ Auto | ✅ Run per pair |
 | 5. Literature Search | 🤖 Default on | ✋ Ask user |
-| 6. Save Reports | 📁 Per gene files | 📁 Per gene files |
-| 7. Confirm Save | ✅ Yes/no at end | ✅ Yes/no at end |
+| 6. Save Reports | 📁 Auto save, no ask | 📁 Ask before save |
 
 ## Supported Species
 
