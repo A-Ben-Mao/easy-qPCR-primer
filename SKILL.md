@@ -33,14 +33,14 @@ allowed-tools: Bash(python:*), mcp__chrome-devtools__*
 
 **主动询问用户**选择模式：
 
-1. **全自动模式** — 输入物种和基因后自动执行全流程：自动选择 PrimerBank 已验证引物 → BLAST 验证 → 自动文献检索（已安装 Chrome MCP 则双检索）→ 按基因保存单文件报告。全程无需手动干预，只需最后确认是否保存。
+1. **全自动模式** — 输入物种和基因后自动执行全流程：自动选择 PrimerBank 已验证引物 → BLAST 验证 → 自动文献检索（已安装 Chrome MCP 则双检索）→ 按基因保存单文件报告。全程无需手动干预。
 2. **半自动模式** — 当前流程：用户在每个关键步骤可手动选择和确认（引物选择、文献检索等），适合需要精细控制的场景。
 
 **如果用户未明确指定模式，默认使用全自动模式。**
 
 ### Phase 1A: NCBI Gene Symbol 转换
 
-用户提供的基因名可能是别名或俗称（如 "GAD67" 是 "GAD1" 的别名），而 PrimerBank 使用 NCBI 官方 Gene Symbol 检索。因此先将每个基因名称转换为 NCBI 官方 Gene Symbol，再用转换后的符号进行后续搜索。
+用户提供的基因名可能是别名或俗称（如 "GAD67" 是 "GAD1" 的别名），PrimerBank 使用 NCBI 官方 Gene Symbol 检索。先将每个基因名称转换为官方 Symbol。
 
 ```bash
 python scripts/primer_blast.py resolve-gene -g <GENE> -s <SPECIES> --json
@@ -49,7 +49,6 @@ python scripts/primer_blast.py resolve-gene -g <GENE> -s <SPECIES> --json
 - 多基因用逗号分隔: `-g GAD1,ACTB`
 - 解析 JSON 输出，获取每个基因的 `symbol`（官方符号）、`gene_id`、`description`
 - 若某基因未找到对应 Symbol，告知用户并建议核实拼写或提供已知别名
-- **用解析到的官方 Symbol 替换用户原始输入，用于后续步骤**
 
 ### Phase 1B: 搜索 PrimerBank
 
@@ -107,7 +106,7 @@ python scripts/primer_blast.py -f <F> -r <R> -g <GENE> -s "<SCIENTIFIC_NAME>" --
 |------|------|---------|--------|------------|----------|
 | GAD1 | #1 | 176 bp | ✅ | 0 | 58.5/59.7°C |
 
-推荐最佳引物：优先选 特异性好 + 已验证 + Tm 差异 < 2°C 的
+全自动模式下，Phase 2A 的优选逻辑已自动选出最佳引物；半自动模式下可参考该标准判断。
 
 ### Phase 5: 文献检索
 
@@ -248,17 +247,13 @@ python scripts/primer_blast.py -f <F> -r <R> -g <GENE> -s "<SCIENTIFIC_NAME>" --
 | Python 不可用 | 提示 `pip install requests` |
 | 自定义引物验证 | 用户直接提供序列时跳过 Phase 1-2 |
 | 大量选择（>10 对） | 提示预计耗时 N 分钟，让用户确认 |
-| 文献搜索无结果 | Chrome MCP 自动降级为仅搜索 Forward/Reverse 单序列；WebSearch 默认只搜 Forward 单序列 |
-| Chrome MCP 双引物搜索无结果 | 自动降级为 `"FORWARD_SEQ" GENE`；仍无则 `"REVERSE_SEQ" GENE` |
+| 文献搜索无结果 | Chrome MCP 自动降级为 `"FORWARD_SEQ" GENE`；仍无则 `"REVERSE_SEQ" GENE`；WebSearch 默认只搜 Forward 单序列 |
 | WebSearch 返回了摘要但无直接 URL | 使用搜索结果中的来源链接（如 PMC/DOI），标注为"搜索结果摘要" |
 | 文献检索只罗列了期刊名未附链接 | **违反规则** — 必须重新搜索并补全具体文章 URL |
 | 用户拒绝保存报告 | 告知结果在对话历史中可查阅 |
 | Chrome MCP 不可用 | WebSearch 单独执行，仍有结果 |
 | Google Scholar 触发 CAPTCHA | 询问用户是否手动完成验证：如用户完成验证后告知，继续方式 A；如用户选择跳过，仅用方式 B WebSearch 继续 |
 | 全自动模式无已验证引物 | 自动选 2-3 个未验证引物纳入流程，BLAST 后优选最佳 |
-| 多验证引物 | 全部纳入后续流程，BLAST 后自动优选 |
-| 全自动模式下文献检索 | 默认执行，不询问用户 |
-| 保存目录不存在 | 自动创建 `primer_results/` 目录 |
 
 ---
 
