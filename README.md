@@ -3,6 +3,10 @@
 # Easy qPCR Primer
 
 > 🧬 **Claude Code Agent Skill** — 在 Claude Code 中直接使用，无需手动安装依赖
+>
+> 📺 [B站视频教程：超简单获取 qPCR 引物序列，真实文献可查！](https://www.bilibili.com/video/BV1WbG16PEn8)
+>
+> ⭐ **欢迎大家在 GitHub 上点星，以及 B 站一键三连！**
 
 **全自动 qPCR 引物设计 + 特异性验证 + 真实文献引用检索**
 

@@ -3,6 +3,10 @@
 # Easy qPCR Primer
 
 > 🧬 **Claude Code Agent Skill** — Invoke directly in Claude Code, no manual dependency setup required.
+>
+> 📺 [Video tutorial on Bilibili (Chinese)](https://www.bilibili.com/video/BV1WbG16PEn8)
+>
+> ⭐ **Star on GitHub and leave a like on Bilibili!**
 
 **Automated qPCR primer design + specificity verification + real literature validation**
 
