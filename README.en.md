@@ -14,6 +14,23 @@ One pipeline: gene name → PrimerBank primer retrieval → BLAST specificity ch
 
 Supports **full-auto** (one-click pipeline) and **semi-auto** (step-by-step manual confirmation) modes. Results saved as individual gene files in the `primer_results/` directory.
 
+## Pipeline
+
+```mermaid
+flowchart TD
+    A[Input gene name<br>e.g. GAD67, VGAT] --> B[NCBI Gene Symbol<br>Standardization]
+    B --> C[PrimerBank Search<br>Retrieve primer pairs]
+    C --> D[NCBI Primer-BLAST<br>Specificity verification]
+    D --> E[Literature Search<br>Google Scholar / Web]
+    E --> F[Report output<br>primer_results/]
+```
+
+1. **Gene Symbol Standardization** — Gene aliases (e.g. GAD67, VGAT, KCC2) are converted to official NCBI Gene Symbols (e.g. GAD1, SLC32A1, SLC12A5) for accurate PrimerBank lookup.
+2. **PrimerBank Search** — Retrieve validated qPCR primer pairs from the public PrimerBank database, including sequences, Tm, product length, and validation status.
+3. **Primer-BLAST Verification** — Submit primers to NCBI Primer-BLAST for off-target detection against the RefSeq mRNA database.
+4. **Literature Search** — Search Google Scholar and the web for published papers that have used your primer sequences, with links and citation counts.
+5. **Report Output** — Each gene gets its own Markdown report in the `primer_results/` directory.
+
 ## File Structure
 
 ```

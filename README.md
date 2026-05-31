@@ -17,7 +17,7 @@
 ## 原理流程
 
 ```mermaid
-flowchart LR
+flowchart TD
     A[输入基因名<br>如 GAD67, VGAT] --> B[NCBI Gene Symbol<br>标准化为官方符号]
     B --> C[PrimerBank 检索<br>获取引物序列]
     C --> D[NCBI Primer-BLAST<br>特异性验证]
