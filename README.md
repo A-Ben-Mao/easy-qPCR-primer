@@ -14,6 +14,23 @@
 
 支持 **全自动**（一键全流程）和 **半自动**（逐步手动确认）两种模式。结果按基因保存为独立文件到 `primer_results/` 目录。
 
+## 原理流程
+
+```mermaid
+flowchart LR
+    A[输入基因名<br>如 GAD67, VGAT] --> B[NCBI Gene Symbol<br>标准化为官方符号]
+    B --> C[PrimerBank 检索<br>获取引物序列]
+    C --> D[NCBI Primer-BLAST<br>特异性验证]
+    D --> E[真实文献检索<br>Google Scholar / Web]
+    E --> F[输出报告<br>primer_results/]
+```
+
+1. **Gene Symbol 标准化** — 用户输入的基因别名（如 GAD67、VGAT、KCC2）转换为 NCBI 官方 Gene Symbol（如 GAD1、SLC32A1、SLC12A5），确保 PrimerBank 能准确检索。
+2. **PrimerBank 检索** — 从哈佛大学维护的公共引物数据库 PrimerBank 中获取目标基因的 qPCR 引物对，包含序列、Tm 值、产物长度及实验验证状态。
+3. **Primer-BLAST 验证** — 将引物对提交至 NCBI Primer-BLAST，在 RefSeq mRNA 数据库中比对，检测非特异性靶标，确保只扩增目标基因。
+4. **真实文献检索** — 在 Google Scholar 和 Web 中搜索引物序列，查找已发表论文中的实际使用记录（含文章链接、被引次数），评估引物的可靠性。
+5. **报告输出** — 每个基因生成独立的 Markdown 报告，保存到 `primer_results/` 目录。
+
 ## 文件结构
 
 ```
